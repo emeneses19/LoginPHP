@@ -1,3 +1,18 @@
+<?php
+session_start();
+if(!isset($_SESSION["id_usuario"])){
+	header ("Location: index.php");
+}
+
+ include("conexion.php");
+ $iduser = $_SESSION["id_usuario"];
+
+ $consultasql = "SELECT idusuarios, Nombre FROM usuarios WHERE idusuarios = '$iduser'";
+
+ $resultadouser = $conn -> query($consultasql);
+ $row = $resultadouser-> fetch_assoc();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -117,7 +132,9 @@
 								<span class="user-info">
 									<small>Bienvenid@</small>
 									<!-- Mostrar Nombre del Usuario Logueado-->
-									Jairo Galeas		
+									<?php
+									echo utf8_decode( $row["Nombre"]);
+									?>		
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>

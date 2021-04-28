@@ -1,5 +1,35 @@
 <?php
 include ("conexion.php");
+
+session_start();
+if(isset($_SESSION["id_usuario"])){
+	header ("Location: admin.php");
+}
+//Login
+if(!empty($_POST)){
+	$usuario = $_POST["user"];
+	$password = $_POST["pass"];
+	$password_encriptada = sha1($password);
+
+	$consultauser = "SELECT idusuarios FROM usuarios WHERE usuario = '$usuario' AND password = '$password_encriptada'";
+	$resultadotuser = $conn ->query($consultauser);
+	$rows = $resultadotuser -> num_rows;
+
+
+	if ($rows > 0) {
+		$rows = $resultadotuser -> fetch_assoc();
+		$_SESSION["id_usuario"] = $rows["idusuarios"];
+		header("Location: admin.php");
+	} else {
+		echo "<script>
+		alert ('Usuario o passwor incorrecto');
+		window.location = 'index.php';
+		</script>";
+	}
+	
+}
+
+
 //Registrar Nuevos usuarios
 if(isset($_POST["registrar"])){
 	$nombre = $_POST["nombre"];
@@ -109,13 +139,13 @@ if(isset($_POST["registrar"])){
 										<fieldset>
 											<label class="block clearfix">
 												<span class="block input-icon input-icon-right">
-													<input type="text" class="form-control"  name="user"placeholder="Usuario" />
+													<input type="text" class="form-control"  name="user"placeholder="Usuario" required />
 													<i class="ace-icon fa fa-user"></i>
 												</span>
 											</label>
 											<label class="block clearfix">
 												<span class="block input-icon input-icon-right">
-													<input type="password" name="pass"class="form-control" placeholder="Contraseña" />
+													<input type="password" name="pass"class="form-control" placeholder="Contraseña" required />
 													<i class="ace-icon fa fa-lock"></i>
 												</span>
 											</label>
